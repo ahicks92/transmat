@@ -32,7 +32,7 @@ For more information, please refer to <http://unlicense.org/>*/
 
 /**This is a matrix transformation library adequate for Libaudioverse's purposes**/
 
-void identityTransform(TmTransform *out) {
+void Tm_identityTransform(TmTransform *out) {
 	memset(out->mat, 0, sizeof(TmTransform));
 	out->mat[0][0] = 1.0f;
 	out->mat[1][1] = 1.0f;
@@ -40,14 +40,14 @@ void identityTransform(TmTransform *out) {
 	out->mat[3][3]=1.0f;
 }
 
-void transformApply(TmTransform trans, TmVector in, TmVector *out) {
+void Tm_transformApply(TmTransform trans, TmVector in, TmVector *out) {
 	//we're multiplying a 3x3 by a 3x1. Output is therefore 3x1.
 	for(int row = 0; row < 4; row++) {
 		out->vec[row] = in.vec[0]*trans.mat[row][0]+in.vec[1]*trans.mat[row][1]+in.vec[2]*trans.mat[row][2]+in.vec[3]*trans.mat[row][3];
 	}
 }
 
-void transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out) {
+void Tm_transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out) {
 	memset(out->mat, 0, sizeof(float)*16); //make sure it's clear so we can add to it directly.
 	for(int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
@@ -58,7 +58,7 @@ void transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out) {
 	}
 }
 
-void transformTranspose(TmTransform t, TmTransform *out) {
+void Tm_transformTranspose(TmTransform t, TmTransform *out) {
 	for(int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
 			out->mat[i][j] = t.mat[j][i];
@@ -66,49 +66,49 @@ void transformTranspose(TmTransform t, TmTransform *out) {
 	}
 }
 
-void transformInvertOrthoganal(TmTransform t, TmTransform *out) {
+void Tm_transformInvertOrthoganal(TmTransform t, TmTransform *out) {
 	TmTransform tmp = {0};
 	TmVector trans = {0};
 	trans.vec[0] = -1*t.mat[0][3];
 	trans.vec[1] = -1*t.mat[1][3];
 	trans.vec[2] = -1*t.mat[2][3];
 	trans.vec[3] = 0.0f; //turn off the translation.  Oddly, this is what we want here.
-	identityTransform(out);
+	Tm_identityTransform(out);
 	TmTransform rot;
 	rot = t;
 	rot.mat[0][3]=0;
 	rot.mat[1][3]=0;
 	rot.mat[2][3]=0;
-	transformTranspose(rot, out); //gives us an inverted rotation.
-	transformApply(*out, trans, &trans); //gives us the inverted translation component.
+	Tm_transformTranspose(rot, out); //gives us an inverted rotation.
+	Tm_transformApply(*out, trans, &trans); //gives us the inverted translation component.
 	//now, copy in the inverted translation.
 	out->mat[0][3] = trans.vec[0];
 	out->mat[1][3] = trans.vec[1];
 	out->mat[2][3] = trans.vec[2];
 }
 
-float vectorDotProduct(TmVector a, TmVector b) {
+float Tm_vectorDotProduct(TmVector a, TmVector b) {
 	return a.vec[0]*b.vec[0]+a.vec[1]*b.vec[1]+a.vec[2]*b.vec[2];
 }
 
-void vectorCrossProduct(TmVector a, TmVector b, TmVector *out) {
+void Tm_vectorCrossProduct(TmVector a, TmVector b, TmVector *out) {
 	out->vec[0] = a.vec[1]*b.vec[2]-a.vec[2]*b.vec[1];
 	out->vec[1]=a.vec[2]*b.vec[0]-a.vec[0]*b.vec[2];
 	out->vec[2] = a.vec[0]*b.vec[1]-a.vec[1]*b.vec[0];
 }
 
-void cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out) {
+void Tm_cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out) {
 	TmVector cy = {.vec = {up.vec[0], up.vec[1], up.vec[2]}};
 	TmVector cz = {.vec = {-at.vec[0], -at.vec[1], -at.vec[2]}};
 	TmVector cx;
 	//x is z cross y.
 	//but we negated z, so it's actually y cross z.
-	vectorCrossProduct(cy, cz, &cx);
+	Tm_vectorCrossProduct(cy, cz, &cx);
 	//figure out what we need to do with translation.
 	float tx, ty, tz;
-	tx = -vectorDotProduct(cx, position);
-	ty = -vectorDotProduct(cy, position);
-	tz = -vectorDotProduct(cz, position);
+	tx = -Tm_vectorDotProduct(cx, position);
+	ty = -Tm_vectorDotProduct(cy, position);
+	tz = -Tm_vectorDotProduct(cz, position);
 	//we now put these into out.
 	for(int i = 0; i < 3; i++) {
 		out->mat[0][i] = cx.vec[i];

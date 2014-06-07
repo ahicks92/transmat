@@ -36,26 +36,13 @@ typedef struct TmVector {
 	float vec[4];
 } TmVector;
 
-/**This library uses pre multiplication for the transformation application step.
-
-In terms of memory, matrices are layed out across the rows and down; that is, using the standard notion mrc (m11 is the top left, m41 is the bottom left):
-{m11, m12, m13, m14, ..., m41, m42, m43, m44}
-
-Vectors are arrays of 4 floats, {x, y, z, w}.
-When w=0, a vector represents a direction; when w=1, a vector represents a position.
-Another way to put this is that w is a boolean switch which turns off and on the translation component of any transformation.  For most purposes, set w to 1.
-Note that this is an oversimplification: w is important in the realm of graphical projection, but those portions of the pipeline are likely to be written on your GPU as shaders, and a full discussion of w is too verbose for this comment.
-
-To actually set a vector, set its .vec attribute appropriately. None of these functions allocate for you but instead modify a TmTransform in place.
-*/
-
-void identityTransform(TmTransform *out);
-void transformApply(TmTransform t, TmVector in, TmVector *out);
-void transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out);
-void transformInvertOrthoganal(TmTransform t, TmTransform *out);
-float vectorDotProduct(TmVector a, TmVector b);
-void vectorCrossProduct(TmVector a, TmVector b, TmVector *out);
-void cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out);
+void Tm_identityTransform(TmTransform *out);
+void Tm_transformApply(TmTransform t, TmVector in, TmVector *out);
+void Tm_transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out);
+void Tm_transformInvertOrthoganal(TmTransform t, TmTransform *out);
+float Tm_vectorDotProduct(TmVector a, TmVector b);
+void Tm_vectorCrossProduct(TmVector a, TmVector b, TmVector *out);
+void Tm_cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out);
 
 #ifdef __cplusplus
 }
