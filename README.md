@@ -19,4 +19,4 @@ A note on convention: there is much confusion around the internet as to what mea
 
 For more information on the different conventions, see [here](http://seanmiddleditch.com/journal/2012/08/matrices-handedness-pre-and-post-multiplication-row-vs-column-major-and-notations/).
 
-The included CMakeLists.txt is intensionally minimalistic.  This allows one to simply use `add_submdirectory` and the submodule capabilities of git or another version control systems to integrate into your project.
+The included CMakeLists.txt is intensionally minimalistic.  This allows one to simply use `add_subdirectory` and the submodule capabilities of git or another version control systems to integrate into your project.
