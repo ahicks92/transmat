@@ -24,7 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>*/
 
-#include <libaudioverse/private_all.h>
+#include "transmat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +32,7 @@ For more information, please refer to <http://unlicense.org/>*/
 
 /**This is a matrix transformation library adequate for Libaudioverse's purposes**/
 
-Lav_PUBLIC_FUNCTION void identityTransform(TmTransform *out) {
+void identityTransform(TmTransform *out) {
 	memset(out->mat, 0, sizeof(TmTransform));
 	out->mat[0][0] = 1.0f;
 	out->mat[1][1] = 1.0f;
@@ -40,14 +40,14 @@ Lav_PUBLIC_FUNCTION void identityTransform(TmTransform *out) {
 	out->mat[3][3]=1.0f;
 }
 
-Lav_PUBLIC_FUNCTION void transformApply(TmTransform trans, TmVector in, TmVector *out) {
+void transformApply(TmTransform trans, TmVector in, TmVector *out) {
 	//we're multiplying a 3x3 by a 3x1. Output is therefore 3x1.
 	for(int row = 0; row < 4; row++) {
 		out->vec[row] = in.vec[0]*trans.mat[row][0]+in.vec[1]*trans.mat[row][1]+in.vec[2]*trans.mat[row][2]+in.vec[3]*trans.mat[row][3];
 	}
 }
 
-Lav_PUBLIC_FUNCTION void transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out) {
+void transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out) {
 	memset(out->mat, 0, sizeof(float)*16); //make sure it's clear so we can add to it directly.
 	for(int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
@@ -58,7 +58,7 @@ Lav_PUBLIC_FUNCTION void transformMultiply(TmTransform t1, TmTransform t2, TmTra
 	}
 }
 
-Lav_PUBLIC_FUNCTION void transformTranspose(TmTransform t, TmTransform *out) {
+void transformTranspose(TmTransform t, TmTransform *out) {
 	for(int i = 0; i < 4; i++) {
 		for(int j = 0; j < 4; j++) {
 			out->mat[i][j] = t.mat[j][i];
@@ -66,7 +66,7 @@ Lav_PUBLIC_FUNCTION void transformTranspose(TmTransform t, TmTransform *out) {
 	}
 }
 
-Lav_PUBLIC_FUNCTION void transformInvertOrthoganal(TmTransform t, TmTransform *out) {
+void transformInvertOrthoganal(TmTransform t, TmTransform *out) {
 	TmTransform tmp = {0};
 	TmVector trans = {0};
 	trans.vec[0] = -1*t.mat[0][3];
@@ -87,17 +87,17 @@ Lav_PUBLIC_FUNCTION void transformInvertOrthoganal(TmTransform t, TmTransform *o
 	out->mat[2][3] = trans.vec[2];
 }
 
-Lav_PUBLIC_FUNCTION float vectorDotProduct(TmVector a, TmVector b) {
+float vectorDotProduct(TmVector a, TmVector b) {
 	return a.vec[0]*b.vec[0]+a.vec[1]*b.vec[1]+a.vec[2]*b.vec[2];
 }
 
-Lav_PUBLIC_FUNCTION void vectorCrossProduct(TmVector a, TmVector b, TmVector *out) {
+void vectorCrossProduct(TmVector a, TmVector b, TmVector *out) {
 	out->vec[0] = a.vec[1]*b.vec[2]-a.vec[2]*b.vec[1];
 	out->vec[1]=a.vec[2]*b.vec[0]-a.vec[0]*b.vec[2];
 	out->vec[2] = a.vec[0]*b.vec[1]-a.vec[1]*b.vec[0];
 }
 
-Lav_PUBLIC_FUNCTION void cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out) {
+void cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out) {
 	TmVector cy = {.vec = {up.vec[0], up.vec[1], up.vec[2]}};
 	TmVector cz = {.vec = {-at.vec[0], -at.vec[1], -at.vec[2]}};
 	TmVector cx;
