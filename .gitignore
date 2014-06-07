@@ -1,0 +1,12 @@
+*.obj
+*.lib
+*.exe
+*.dll
+sndfile.h
+*.ilk
+*.pdb
+*.wav
+mono_library/
+build/
+*.pyc
+*.hrtf
