@@ -29,6 +29,26 @@ For more information, please refer to <http://unlicense.org/>*/
 extern "C" {
 #endif
 
+/**Does whatever is appropriate on a given platform to expose a Transmat function publically.*/
+#ifdef _MSC_VER
+#define DLL_PUBLIC_ATTR __declspec(dllexport)
+#endif
+#ifndef DLL_PUBLIC_ATTR
+#define DLL_PUBLIC_ATTR
+#endif
+#ifdef __cplusplus
+#define TmPUBLIC_FUNCTION extern "C" DLL_PUBLIC_ATTR
+#else
+#define Tm_PUBLIC_FUNCTION extern DLL_PUBLIC_ATTR
+#endif
+
+/*This block takes effect if this header is being preprocessed for the tests, turning off whatever weird thing we need for the build.*/
+#ifdef IS_TESTING
+//gets rid of macro redefinition warnings.
+#undef Tm_PUBLIC_FUNCTION
+#define Tm_PUBLIC_FUNCTION
+#endif
+
 typedef struct TmTransform {
 	float mat[4][4];
 } TmTransform;
@@ -36,13 +56,13 @@ typedef struct TmVector {
 	float vec[4];
 } TmVector;
 
-void Tm_identityTransform(TmTransform *out);
-void Tm_transformApply(TmTransform t, TmVector in, TmVector *out);
-void Tm_transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out);
-void Tm_transformInvertOrthoganal(TmTransform t, TmTransform *out);
-float Tm_vectorDotProduct(TmVector a, TmVector b);
-void Tm_vectorCrossProduct(TmVector a, TmVector b, TmVector *out);
-void Tm_cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out);
+Tm_PUBLIC_FUNCTION void Tm_identityTransform(TmTransform *out);
+Tm_PUBLIC_FUNCTION void Tm_transformApply(TmTransform t, TmVector in, TmVector *out);
+Tm_PUBLIC_FUNCTION void Tm_transformMultiply(TmTransform t1, TmTransform t2, TmTransform *out);
+Tm_PUBLIC_FUNCTION void Tm_transformInvertOrthoganal(TmTransform t, TmTransform *out);
+Tm_PUBLIC_FUNCTION float Tm_vectorDotProduct(TmVector a, TmVector b);
+Tm_PUBLIC_FUNCTION void Tm_vectorCrossProduct(TmVector a, TmVector b, TmVector *out);
+Tm_PUBLIC_FUNCTION void Tm_cameraTransform(TmVector at, TmVector up, TmVector position, TmTransform *out);
 
 #ifdef __cplusplus
 }

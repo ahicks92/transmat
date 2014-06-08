@@ -5,5 +5,6 @@ if(${CMAKE_COMPILER_IS_GNUCC})
 add_definitions(-std=c99)
 endif()
 
-add_library(transmat transmat.c)
+add_library(transmat SHARED transmat.c)
 
+SET_PROPERTY(TARGET transmat PROPERTY LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
