@@ -37,7 +37,7 @@ extern "C" {
 #define DLL_PUBLIC_ATTR
 #endif
 #ifdef __cplusplus
-#define TmPUBLIC_FUNCTION extern "C" DLL_PUBLIC_ATTR
+#define Tm_PUBLIC_FUNCTION extern "C" DLL_PUBLIC_ATTR
 #else
 #define Tm_PUBLIC_FUNCTION extern DLL_PUBLIC_ATTR
 #endif
